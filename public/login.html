@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Iniciar Sesión</title>
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+  <h2>Iniciar Sesión</h2>
+  <form id="loginForm">
+    <label>Correo:</label><br>
+    <input type="email" name="correo" required><br><br>
+
+    <label>Contraseña:</label><br>
+    <input type="password" name="contraseña" required><br><br>
+
+    <button type="submit">Ingresar</button>
+  </form>
+
+  <p id="mensaje"></p>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+
+      const datos = {
+        correo: form.correo.value,
+        contraseña: form.contraseña.value
+      };
+
+      const respuesta = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos)
+      });
+
+      if (respuesta.ok) {
+        const datosUsuario = await respuesta.json();
+        localStorage.setItem('usuario_id', datosUsuario.usuario.id);
+        window.location.href = 'menu.html';
+      } else {
+        const mensaje = await respuesta.text();
+        document.getElementById('mensaje').innerText = mensaje;
+      }
+    });
+  </script>
+</body>
+</html>

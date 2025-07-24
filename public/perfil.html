@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Crear Perfil</title>
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+  <h2>Completar Perfil</h2>
+  <form id="perfilForm">
+    <label>Oficio (podés seleccionar varios):</label>
+    <select name="oficios" multiple required>
+      <option value="empleador">Empleador</option>
+      <option value="electricista">Electricista</option>
+      <option value="jardinero">Jardinero</option>
+      <option value="plomero">Plomero</option>
+      <option value="limpiador">Limpiador</option>
+      <option value="niñero">Niñero</option>
+      <option value="mantenimiento">Mantenimiento de aire</option>
+      <option value="pintor">Pintor</option>
+      <option value="profesor">Profesor</option>
+      <option value="carpintero">Carpintero</option>
+      <option value="fletero">Fletero</option>
+      <option value="otro">Otro</option>
+    </select><br><br>
+
+    <label>Horario laboral:</label>
+    <select name="horario">
+      <option value="mañana">Por la mañana</option>
+      <option value="tarde">Por la tarde</option>
+      <option value="otro">Establecer horario</option>
+    </select><br><br>
+
+    <label>Área de trabajo:</label>
+    <select name="area" required>
+      <option value="hohenau">Hohenau</option>
+      <option value="bella vista">Bella Vista</option>
+      <option value="obligado">Obligado</option>
+    </select><br><br>
+
+    <label>Tarifa (opcional):</label>
+    <input type="number" name="tarifa" placeholder="Monto en Gs."><br><br>
+
+    <button type="submit">Guardar Perfil</button>
+  </form>
+
+  <p id="mensaje"></p>
+
+  <script>
+    document.getElementById('perfilForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const usuario_id = localStorage.getItem('usuario_id'); // ← necesario
+
+      if (!usuario_id) {
+        document.getElementById('mensaje').innerText = 'Error: No se encontró usuario autenticado';
+        return;
+      }
+
+      const form = e.target;
+      const oficiosSeleccionados = Array.from(form.oficios.selectedOptions).map(op => op.value);
+
+      const datos = {
+        usuario_id,
+        oficios: oficiosSeleccionados,
+        horario: form.horario.value,
+        area: form.area.value,
+        tarifa: form.tarifa.value
+      };
+
+      const respuesta = await fetch('/api/perfil', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos)
+      });
+
+      const mensaje = await respuesta.text();
+      document.getElementById('mensaje').innerText = mensaje;
+    });
+  </script>
+</body>
+</html>

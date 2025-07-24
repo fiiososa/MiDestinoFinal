@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Registro de Usuario</title>
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+  <h2>Formulario de Registro</h2>
+  <form id="registroForm">
+    <label>Nombre:</label><br>
+    <input type="text" name="nombre" required><br><br>
+
+    <label>Cédula:</label><br>
+    <input type="text" name="cedula" required><br><br>
+
+    <label>Teléfono:</label><br>
+    <input type="text" name="telefono" required><br><br>
+
+    <label>Correo:</label><br>
+    <input type="email" name="correo" required><br><br>
+
+    <label>Contraseña:</label><br>
+    <input type="password" name="contraseña" required><br><br>
+
+    <button type="submit">Registrar</button>
+  </form>
+
+  <p id="mensaje"></p>
+
+  <script>
+    document.getElementById('registroForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const form = e.target;
+      const datos = {
+        nombre: form.nombre.value,
+        cedula: form.cedula.value,
+        telefono: form.telefono.value,
+        correo: form.correo.value,
+        contraseña: form.contraseña.value
+      };
+
+      const respuesta = await fetch('/api/registro', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos)
+      });
+
+      const mensaje = await respuesta.text();
+document.getElementById('mensaje').innerText = mensaje;
+
+if (respuesta.ok) {
+  setTimeout(() => {
+    window.location.href = 'index.html'; // o directamente a login.html
+  }, 2000); // espera 2 segundos antes de redirigir
+}
+    });
+  </script>
+</body>
+</html>
